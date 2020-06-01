@@ -3,7 +3,6 @@ import { LitElement, html, customElement, property, internalProperty } from 'lit
 import P2P, { State } from '@mothepro/fancy-p2p'
 import type { ProposalEvent } from './src/lobby.js'
 import { name, version } from './package.json'
-import { stuns, signaling, retries, timeout } from './src/config.js'
 
 import './src/lobby.js'
 import './src/amazons.js'

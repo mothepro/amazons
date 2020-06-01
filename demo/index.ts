@@ -24,3 +24,17 @@ if (params.has('name'))
       retries=${3}
       timeout=${5 * 1000}
     ></mo-amazons>`, document.body)
+
+
+/////////////////////////////////////////////////
+// Global site tag(gtag.js) - Google Analytics //
+/////////////////////////////////////////////////
+
+// @ts-ignore
+window.dataLayer = window.dataLayer || []
+// @ts-ignore
+function gtag() { dataLayer.push(arguments) }
+// @ts-ignore
+gtag('js', new Date())
+// @ts-ignore
+gtag('config', 'UA-48191613-7')
