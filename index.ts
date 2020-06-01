@@ -29,12 +29,11 @@ if (params.has('name'))
 /////////////////////////////////////////////////
 // Global site tag(gtag.js) - Google Analytics //
 /////////////////////////////////////////////////
-
 // @ts-ignore
 window.dataLayer = window.dataLayer || []
 // @ts-ignore
 function gtag() { dataLayer.push(arguments) }
 // @ts-ignore
-gtag('js', new Date())
+gtag('js', new Date)
 // @ts-ignore
 gtag('config', 'UA-48191613-7')
