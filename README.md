@@ -37,3 +37,7 @@ Inline demo for webcomponents.org
 
 
 ```
+
+## Roadmap
+
++ Remove yellow square when opponent is trying to destroy

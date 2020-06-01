@@ -10,8 +10,25 @@ import './src/amazons.js'
 
 @customElement('mo-amazons')
 export default class extends LitElement {
+  /** Name of player in lobby. */
   @property({ type: String })
   name!: string
+
+  /** List of STUN servers to broker P2P connections. */
+  @property({ type: Array })
+  stuns!: string[]
+
+  /** Address to the signaling server. */
+  @property({ type: String })
+  signaling!: string
+
+  /** Number of times to attempt to make an RTC connection. Defaults to 1 */
+  @property({ type: Number })
+  retries!: number
+
+  /** The number of milliseconds to wait before giving up on the connection. Doesn't give up by default */
+  @property({ type: Number })
+  timeout!: number
 
   @internalProperty()
   private color?: Color
@@ -21,14 +38,14 @@ export default class extends LitElement {
   protected async firstUpdated() {
     this.p2p = new P2P({
       name: this.name,
-      stuns,
+      retries: this.retries,
+      timeout: this.timeout,
+      stuns: this.stuns,
       lobby: `${name}@${version}`,
       server: {
-        address: new URL(signaling),
+        address: new URL(this.signaling),
         version: '0.2.0',
       },
-      retries,
-      timeout,
     })
 
     try {

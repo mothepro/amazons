@@ -65,7 +65,7 @@ export default class extends LitElement {
     cursor: grabbing;
   }
   
-  :host ::part(spot-valid) {
+  :host ::part(spot-valid) { /* TODO, do not style if [ignore] */
     background-color: yellow;
   }
   :host ::part(spot-valid):hover {
