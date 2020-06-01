@@ -2,7 +2,7 @@ import { Color, Spot } from '@mothepro/amazons-engine'
 import { LitElement, html, customElement, property, internalProperty } from 'lit-element'
 import P2P, { State } from '@mothepro/fancy-p2p'
 import type { ProposalEvent } from './src/lobby.js'
-import { name, version } from './package.json'
+import pkg from './package.json'
 
 import './src/lobby.js'
 import './src/amazons.js'
@@ -40,7 +40,7 @@ export default class extends LitElement {
       retries: this.retries,
       timeout: this.timeout,
       stuns: this.stuns,
-      lobby: `${name}@${version}`,
+      lobby: `${pkg.name}@${pkg.version}`,
       server: {
         address: new URL(this.signaling),
         version: '0.2.0',
