@@ -64,6 +64,15 @@
   resolved "https://registry.yarnpkg.com/@mothepro/loose-set/-/loose-set-1.0.0.tgz#ca9ab5d352b0674ec7d9c399b4dc3adb9dc80d33"
   integrity sha512-VAbVpnlxirGhT0hRadEtC+nWPONDQcsOx92ZncGwQOPkL0UtuMGKmDoKsc7dtKqmxpAzBEhcyTq5Kb5ayVVqhA==
 
+"@mothepro/signaling-lobby@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@mothepro/signaling-lobby/-/signaling-lobby-0.2.1.tgz#b1ed85f96d43eaad88fd309988186d60f784362e"
+  integrity sha512-5729nkx9KeqRL7dXreQqZpg1IRGGvf9qr56rAKsqRo6yV9w71VIzb2HhDN+HRZb16sG6Kg0ZEDXoWAmXX0MwhA==
+  dependencies:
+    fancy-emitter "^1.5.1"
+    ws "^7.2.3"
+    yargs "^15.3.1"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"
@@ -187,6 +196,13 @@
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@types/sinonjs__fake-timers/-/sinonjs__fake-timers-6.0.1.tgz#681df970358c82836b42f989188d133e218c458e"
   integrity sha512-yYezQwGWty8ziyYLdZjwxyMb0CZR49h8JALHGrxjQHWlqGgc8kLdHEgWrgL0uZ29DMvEVBDnHU2Wg36zKSIUtA==
+
+"@types/ws@^7.2.4":
+  version "7.2.4"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.2.4.tgz#b3859f7b9c243b220efac9716ec42c716a72969d"
+  integrity sha512-9S6Ask71vujkVyeEXKxjBSUV8ZUB0mjL5la4IncBoheu04bDaYyUKErh1BQcY9+WzOUOiKqz/OnpJHYckbMfNg==
+  dependencies:
+    "@types/node" "*"
 
 ajv@^6.5.5:
   version "6.12.2"
@@ -3179,6 +3195,11 @@ write-file-atomic@^3.0.0:
     is-typedarray "^1.0.0"
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
+
+ws@^7.2.3:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.3.0.tgz#4b2f7f219b3d3737bc1a2fbf145d825b94d38ffd"
+  integrity sha512-iFtXzngZVXPGgpTlP1rBqsUK82p9tKqsWRPg5L56egiljujJT3vGAYnHANvFxBieXrTFavhzhxW52jnaWV+w2w==
 
 xdg-basedir@^4.0.0:
   version "4.0.0"
