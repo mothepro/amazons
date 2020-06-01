@@ -1,10 +1,19 @@
 import { customElement, LitElement, html, css, internalProperty, property } from 'lit-element'
 import type { PieceMovedEvent, SpotDestroyedEvent } from '@mothepro/lit-amazons'
 import type { Peer } from '@mothepro/fancy-p2p'
-import Engine, { Color } from '@mothepro/amazons-engine'
+import Engine, { Color, Position } from '@mothepro/amazons-engine'
 
 import '@mothepro/lit-amazons'
 import 'lit-confetti'
+
+// Note: board must be an 8x8 or smaller
+const posToBuf = (...pos: Position[]) => new Uint8Array(
+  pos.map(([x, y]) => x | y << 4))
+
+const bufToPos = (data: ArrayBuffer) => [...new Uint8Array(data)].map(byte => ([
+  byte & 0b0000_1111,
+  byte >> 4,
+] as Position))
 
 @customElement('mo-amazons-game')
 export default class extends LitElement {
@@ -15,7 +24,7 @@ export default class extends LitElement {
   color!: Color
 
   @property({ attribute: false })
-  peer!: Peer
+  peer!: Peer<ArrayBuffer>
 
   @internalProperty()
   protected confetti = 0
@@ -73,12 +82,43 @@ export default class extends LitElement {
     content: '💥';
   }`
 
-  async firstUpdated() {
+  protected async firstUpdated() {
+    this.bindMessages()
     this.engine.start()
     for await (const _ of this.engine.stateChange)
       this.requestUpdate()
     this.confetti = 150
     setTimeout(() => this.confetti = 0, 10 * 1000)
+  }
+
+  private async bindMessages() {
+    for await (const data of this.peer.message) {
+      switch (data.byteLength) {
+        case 1: // Destroy
+          const [spot] = bufToPos(data)
+          this.engine.destroy(spot)
+          break
+
+        case 2: // Move
+          const [from, to] = bufToPos(data)
+          this.engine.move(from, to)
+          break
+        
+        default:
+          console.error(`Unexpected data from ${this.peer.name}`, data)
+          break
+      }
+    }
+  }
+
+  private pieceMoved({ detail: { from, to } }: PieceMovedEvent) {
+    this.engine.move(from, to)
+    this.peer.send(posToBuf(from, to))
+  }
+
+  private spotDestroyed({ detail: spot }: SpotDestroyedEvent) {
+    this.engine.destroy(spot)
+    this.peer.send(posToBuf(spot))
   }
 
   protected readonly render = () => html`
@@ -93,8 +133,8 @@ export default class extends LitElement {
       .destructible=${this.engine.destructible}
       .pieces=${this.engine.pieces}
       .board=${this.engine.board}
-      @piece-moved=${({ detail: { from, to } }: PieceMovedEvent) => this.engine.move(from, to)}
-      @spot-destroyed=${({ detail }: SpotDestroyedEvent) => this.engine.destroy(detail)}
+      @piece-moved=${this.pieceMoved}
+      @spot-destroyed=${this.spotDestroyed}
       @piece-picked=${() => this.setAttribute('dragging', '')}
       @piece-let-go=${() => this.removeAttribute('dragging')}
     ></lit-amazons>
