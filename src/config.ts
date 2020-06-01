@@ -19,4 +19,4 @@ export const stuns = [
 export const retries = 3
 
 /** The number of milliseconds to wait before giving up on the connection. Doesn't give up by default */
-export const timeout = 20 * 1000
+export const timeout = 5 * 1000
