@@ -20,11 +20,11 @@ export default class extends LitElement {
 
   protected engine = new Engine
 
-  @property({ type: Number })
-  color!: Color
+  @property({ attribute: false })
+  peers!: Record<Color, Peer<ArrayBuffer>>
 
   @property({ attribute: false })
-  peer!: Peer<ArrayBuffer>
+  broadcast!: (data: ArrayBuffer, includeSelf?: boolean) => void
 
   @internalProperty()
   protected confetti = 0
@@ -83,7 +83,8 @@ export default class extends LitElement {
   }`
 
   protected async firstUpdated() {
-    this.bindMessages()
+    for (const [color, peer] of Object.entries(this.peers))
+      this.bindMessages(peer, parseInt(color))
     this.engine.start()
     for await (const _ of this.engine.stateChange)
       this.requestUpdate()
@@ -91,50 +92,48 @@ export default class extends LitElement {
     setTimeout(() => this.confetti = 0, 10 * 1000)
   }
 
-  private async bindMessages() {
-    for await (const data of this.peer.message) {
-      switch (data.byteLength) {
-        case 1: // Destroy
-          const [spot] = bufToPos(data)
-          this.engine.destroy(spot)
-          break
+  private async bindMessages({ message, name }: Peer<ArrayBuffer>, color: Color) {
+    try {
+      for await (const data of message) {
+        if (this.engine.current != color)
+          throw Error(`${name} sent ${data} (${data.byteLength} bytes) when it isn't their turn`)
 
-        case 2: // Move
-          const [from, to] = bufToPos(data)
-          this.engine.move(from, to)
-          break
-        
-        default:
-          console.error(`Unexpected data from ${this.peer.name}`, data)
-          break
+        switch (data.byteLength) {
+          case 1: // Destroy
+            const [spot] = bufToPos(data)
+            this.engine.destroy(spot)
+            break
+
+          case 2: // Move
+            const [from, to] = bufToPos(data)
+            this.engine.move(from, to)
+            break
+
+          default:
+            throw Error(`Only expected 1 or 2 bytes, but ${name} sent ${data} (${data.byteLength} bytes)`)
+        }
       }
+    } catch (err) {
+      console.error('Connection broken with', name, err)
     }
-  }
-
-  private pieceMoved({ detail: { from, to } }: PieceMovedEvent) {
-    this.engine.move(from, to)
-    this.peer.send(posToBuf(from, to))
-  }
-
-  private spotDestroyed({ detail: spot }: SpotDestroyedEvent) {
-    this.engine.destroy(spot)
-    this.peer.send(posToBuf(spot))
+    // game is no longer updated...
+    // peer.close()
   }
 
   protected readonly render = () => html`
     <h1>${this.engine.stateChange.isAlive
-      ? `${this.engine.current == this.color ? 'Your' : `${this.peer.name}'s`} turn`
-      : `${this.engine.waiting == this.color ? 'You Win' : `${this.peer.name} Wins`}!`
+      ? `${this.peers[this.engine.current].isYou ? 'Your' : `${this.peers[this.engine.current].name}'s`} turn`
+      : `${this.peers[this.engine.waiting].isYou ? 'You Win' : `${this.peers[this.engine.current].name} Wins`}!`
     }</h1>
     <lit-amazons
-      ?ignore=${this.engine.current != this.color}
+      ?ignore=${!this.peers[this.engine.current].isYou}
       state=${this.engine.state}
       current=${this.engine.current}
       .destructible=${this.engine.destructible}
       .pieces=${this.engine.pieces}
       .board=${this.engine.board}
-      @piece-moved=${this.pieceMoved}
-      @spot-destroyed=${this.spotDestroyed}
+      @piece-moved=${({ detail: { from, to } }: PieceMovedEvent) => this.broadcast(posToBuf(from, to))}
+      @spot-destroyed=${({ detail: spot }: SpotDestroyedEvent) => this.broadcast(posToBuf(spot))}
       @piece-picked=${() => this.setAttribute('dragging', '')}
       @piece-let-go=${() => this.removeAttribute('dragging')}
     ></lit-amazons>
