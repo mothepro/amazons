@@ -21,8 +21,8 @@ if (params.has('name'))
         "stun:stun3.l.google.com:19302",
         "stun:stun4.l.google.com:19302",
       ]}
-      retries=${3}
-      timeout=${5 * 1000}
+      retries=3
+      timeout=5000
     ></mo-amazons>`, document.body)
 
 
