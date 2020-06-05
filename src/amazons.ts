@@ -123,7 +123,7 @@ export default class extends LitElement {
   protected readonly render = () => html`
     <h1>${this.engine.stateChange.isAlive
       ? `${this.peers[this.engine.current].isYou ? 'Your' : `${this.peers[this.engine.current].name}'s`} turn`
-      : `${this.peers[this.engine.waiting].isYou ? 'You Win' : `${this.peers[this.engine.current].name} Wins`}!`
+      : `${this.peers[this.engine.waiting].isYou ? 'You Win' : `${this.peers[this.engine.waiting].name} Wins`}!`
     }</h1>
     <lit-amazons
       ?ignore=${!this.peers[this.engine.current].isYou}
