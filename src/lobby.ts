@@ -12,6 +12,16 @@ declare global {
 
 @customElement('duo-lobby')
 export default class extends LitElement {
+  /** Text that should show up on the invite button. */
+  @property({ type: String })
+  inviteText = 'Invite'
+  /** Text that should show up on the accept button. */
+  @property({ type: String })
+  acceptText = 'Accept'
+  /** Text that should show up on the reject button. */
+  @property({ type: String })
+  rejectText = 'Reject'
+
   /** Activated when a client joins the lobby */
   @property({ attribute: false })
   connection!: Listener<Client>
@@ -37,28 +47,32 @@ export default class extends LitElement {
     this.clients = this.clients.filter(({ client: currentClient }) => currentClient != client)
   }
 
-  // TODO group clients and proposals in one nice UI
-  protected readonly render = () => html`${this.clients.length
-    ? html`Who do you want to play against?
-      <ul>
-        ${[...this.clients].map(({ client, action }) => html`
-        <li>
-          <span @click=${(event: Event) => // Propose group of all the ack'd clients
-              !client.isYou
+  protected readonly render = () => html`
+    <ul part="client-list">
+      ${this.clients.map(({ client, action }) => html`
+      <li part="client is-${client.isYou ? 'you': 'other'}">
+        ${client.name}
+        ${action
+        ? html`
+          <button
+            part="accept"
+            @click=${() => {
+              action(true)
+              this.clients = this.clients.map(item => item.client == client ? { client, action: undefined } : item)
+            }}>${this.acceptText}</button>
+          <button
+            part="reject"
+            @click=${() => {
+              this.clients = this.clients.map(item => item.client == client ? { client, action: undefined } : item)
+              action(false)
+            }}>${this.rejectText}</button>`
+        : html`
+          <button
+            part="invite"
+            ?disabled=${client.isYou}
+            @click=${() => !client.isYou // Can't propose to self
               && this.dispatchEvent(new CustomEvent('proposal', { detail: client }))
-              && event.preventDefault()}>
-            ${client.name}
-          </span>
-          ${action ? html`
-          <button @click=${() => {
-            action(true)
-            this.clients = this.clients.map(item => item.client == client ? { client, action: undefined } : item)
-          }}>Accept</button>
-          <button @click=${() => {
-            this.clients = this.clients.map(item => item.client == client ? { client, action: undefined } : item)
-            action(false)
-          }}>Reject</button>` : ''}
-        </li>`)}
-      </ul>`
-    : 'No one else has joined this lobby... yet.'}`
+            }>${this.inviteText}</button>`}
+      </li>`)}
+    </ul>`
 }

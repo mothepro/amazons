@@ -1,7 +1,7 @@
 import { customElement, LitElement, html, css, internalProperty, property } from 'lit-element'
 import type { PieceMovedEvent, SpotDestroyedEvent } from '@mothepro/lit-amazons'
 import type { Peer } from '@mothepro/fancy-p2p'
-import Engine, { Color, Position } from '@mothepro/amazons-engine'
+import Amazons, { Color, Position } from '@mothepro/amazons-engine'
 
 import '@mothepro/lit-amazons'
 import 'lit-confetti'
@@ -18,7 +18,7 @@ const bufToPos = (data: ArrayBuffer) => [...new Uint8Array(data)].map(byte => ([
 @customElement('amazons-with-peers')
 export default class extends LitElement {
 
-  protected engine = new Engine
+  protected amazons = new Amazons
 
   @property({ attribute: false })
   peers!: Record<Color, Peer<ArrayBuffer>>
@@ -38,11 +38,13 @@ export default class extends LitElement {
     position: fixed;
   }
   :host lit-amazons {
+    border: thin solid black;
+    margin: 0 auto;
     grid-auto-rows: 1fr;
     grid-auto-columns: 1fr;
-    border: thin solid black;
-    width: 1000px;
-    height: 1000px;
+    width: 100%;
+    max-width: 1000px;
+    max-height: 1000px;
   }
   
   :host ::part(spot) {
@@ -53,7 +55,7 @@ export default class extends LitElement {
     background-color: lightgrey;
   }
   :host ::part(symbol) {
-    font-size: 5em;
+    font-size: 3em;
   }
   :host ::part(symbol-draggable) {
     cursor: grab;
@@ -85,9 +87,11 @@ export default class extends LitElement {
   protected async firstUpdated() {
     for (const [color, peer] of Object.entries(this.peers))
       this.bindMessages(peer, parseInt(color))
-    this.engine.start()
-    for await (const _ of this.engine.stateChange)
+
+    this.amazons.start()
+    for await (const _ of this.amazons.stateChange)
       this.requestUpdate()
+
     this.confetti = 150
     setTimeout(() => this.confetti = 0, 10 * 1000)
   }
@@ -95,18 +99,18 @@ export default class extends LitElement {
   private async bindMessages({ message, name }: Peer<ArrayBuffer>, color: Color) {
     try {
       for await (const data of message) {
-        if (this.engine.current != color)
+        if (this.amazons.current != color)
           throw Error(`${name} sent ${data} (${data.byteLength} bytes) when it isn't their turn`)
 
         switch (data.byteLength) {
           case 1: // Destroy
             const [spot] = bufToPos(data)
-            this.engine.destroy(spot)
+            this.amazons.destroy(spot)
             break
 
           case 2: // Move
             const [from, to] = bufToPos(data)
-            this.engine.move(from, to)
+            this.amazons.move(from, to)
             break
 
           default:
@@ -121,21 +125,22 @@ export default class extends LitElement {
   }
 
   protected readonly render = () => html`
-    <h1>${this.engine.stateChange.isAlive
-      ? `${this.peers[this.engine.current].isYou ? 'Your' : `${this.peers[this.engine.current].name}'s`} turn`
-      : `${this.peers[this.engine.waiting].isYou ? 'You Win' : `${this.peers[this.engine.waiting].name} Wins`}!`
+    <h1 part="title is-${this.amazons.stateChange.isAlive ? 'ongoing' : 'over'}">${this.amazons.stateChange.isAlive
+      ? `${this.peers[this.amazons.current].isYou ? 'Your' : `${this.peers[this.amazons.current].name}'s`} turn`
+      : `${this.peers[this.amazons.waiting].isYou ? 'You Win' : `${this.peers[this.amazons.waiting].name} Wins`}!`
     }</h1>
     <lit-amazons
-      ?ignore=${!this.peers[this.engine.current].isYou}
-      state=${this.engine.state}
-      current=${this.engine.current}
-      .destructible=${this.engine.destructible}
-      .pieces=${this.engine.pieces}
-      .board=${this.engine.board}
+      part="game"
+      ?ignore=${!this.peers[this.amazons.current].isYou}
+      state=${this.amazons.state}
+      current=${this.amazons.current}
+      .destructible=${this.amazons.destructible}
+      .pieces=${this.amazons.pieces}
+      .board=${this.amazons.board}
       @piece-moved=${({ detail: { from, to } }: PieceMovedEvent) => this.broadcast(posToBuf(from, to))}
       @spot-destroyed=${({ detail: spot }: SpotDestroyedEvent) => this.broadcast(posToBuf(spot))}
       @piece-picked=${() => this.setAttribute('dragging', '')}
       @piece-let-go=${() => this.removeAttribute('dragging')}
     ></lit-amazons>
-    <lit-confetti count=${this.confetti} gravity=1></lit-confetti>`
+    <lit-confetti part="confetti" gravity=1 count=${this.confetti}></lit-confetti>`
 }

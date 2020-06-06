@@ -66,6 +66,7 @@ export default class extends LitElement {
       switch (this.p2p!.state) {
         case State.LOBBY:
           return html`
+            Who do you want to play against?
             <duo-lobby
               .connection=${this.p2p.connection}
               @proposal=${this.proposeGroup}
