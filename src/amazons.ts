@@ -54,9 +54,6 @@ export default class extends LitElement {
   :host ::part(spot-parity-same) {
     background-color: lightgrey;
   }
-  :host ::part(symbol) {
-    font-size: 3em;
-  }
   :host ::part(symbol-draggable) {
     cursor: grab;
   }
@@ -82,6 +79,31 @@ export default class extends LitElement {
   }
   :host ::part(symbol-4):before {
     content: '💥';
+  }
+
+  /* Symbol Sizing */
+  :host ::part(symbol) {
+    font-size: 1em;
+  }
+  @media (min-width: 576px) { /* bootstrap "sm" */
+    :host ::part(symbol) {
+      font-size: 2em;
+    }
+  }
+  @media (min-width: 768px) { /* bootstrap "md" */
+    :host ::part(symbol) {
+      font-size: 3em;
+    }
+  }
+  @media (min-width: 992px) { /* bootstrap "lg" */
+    :host ::part(symbol) {
+      font-size: 4em;
+    }
+  }
+  @media (min-width: 1200px) { /* bootstrap "xl" */
+    :host ::part(symbol) {
+      font-size: 5em;
+    }
   }`
 
   protected async firstUpdated() {
