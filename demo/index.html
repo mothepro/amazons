@@ -10,7 +10,7 @@
   <!-- Production -->
   <script prod-only type=prod-only-module src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
   <script prod-only type=prod-only-module-shim src="//unpkg.com/amazons/dist/esm/demo/index.js"></script>
-  <script prod-only type=prod-only-application/javascript
+  <script prod-only type=prod-only-application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-48191613-7"></script>
   <!-- Development -->
   <script dev-only type=application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
@@ -26,5 +26,12 @@
   <br />
   <a href="https://mothepro.github.io/lit-amazons/">single player coming soon...</a>
 </body>
+
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'UA-48191613-7')
+</script>
 
 </html>
