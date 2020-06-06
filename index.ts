@@ -7,7 +7,7 @@ import pkg from './package.json'
 import './src/lobby.js'
 import './src/amazons.js'
 
-@customElement('mo-amazons')
+@customElement('amazons-online')
 export default class extends LitElement {
   /** Name of player in lobby. */
   @property({ type: String })
@@ -66,23 +66,23 @@ export default class extends LitElement {
       switch (this.p2p!.state) {
         case State.LOBBY:
           return html`
-            <mo-lobby
+            <duo-lobby
               .connection=${this.p2p.connection}
               @proposal=${this.proposeGroup}
-            ></mo-lobby>`
+            ></duo-lobby>`
 
         case State.LOADING:
           return html`<slot name="loading">Loading...</slot>`
 
         case State.READY:
           return html`
-            <mo-amazons-game
+            <amazons-with-peers
               .broadcast=${this.p2p.broadcast}
               .peers=${{
                 [Spot.BLACK]: this.p2p.peers[0],
                 [Spot.WHITE]: this.p2p.peers[1],
               }}
-            ></mo-amazons-game>`
+            ></amazons-with-peers>`
       }
 
     return html`<slot name="offline">Offline</slot>`

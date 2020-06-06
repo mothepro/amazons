@@ -1,4 +1,4 @@
-# Amazons
+# [`<amazons-online>`](https://amazons.parkshade.com)
 
 > Peer to peer game of Amazons
 

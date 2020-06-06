@@ -15,7 +15,7 @@ const bufToPos = (data: ArrayBuffer) => [...new Uint8Array(data)].map(byte => ([
   byte >> 4,
 ] as Position))
 
-@customElement('mo-amazons-game')
+@customElement('amazons-with-peers')
 export default class extends LitElement {
 
   protected engine = new Engine
@@ -65,7 +65,7 @@ export default class extends LitElement {
     cursor: grabbing;
   }
   
-  :host ::part(spot-valid) { /* TODO, do not style if [ignore] */
+  :host :not([ignore])::part(spot-valid) {
     background-color: yellow;
   }
   :host ::part(spot-valid):hover {

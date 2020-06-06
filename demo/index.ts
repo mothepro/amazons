@@ -8,7 +8,7 @@ const isProduction = location.protocol == 'https:',
 // Add `mo-amazons` element with the attributes if user has a name.
 if (params.has('name'))
   render(html`
-    <mo-amazons
+    <amazons-online
       name=${params.get('name')!}
       signaling=${isProduction
         ? 'wss://ws.parkshade.com:443'
@@ -23,7 +23,7 @@ if (params.has('name'))
       ]}
       retries=3
       timeout=5000
-    ></mo-amazons>`, document.body)
+    ></amazons-online>`, document.body)
 
 
 /////////////////////////////////////////////////

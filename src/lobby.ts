@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-@customElement('mo-lobby')
+@customElement('duo-lobby')
 export default class extends LitElement {
   /** Activated when a client joins the lobby */
   @property({ attribute: false })
