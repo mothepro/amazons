@@ -32,15 +32,14 @@ export default class extends LitElement {
   private p2p?: P2P<ArrayBuffer>
 
   protected async firstUpdated() {
-    this.p2p = new P2P({
-      name: this.name,
+    this.p2p = new P2P('', {
       retries: this.retries,
       timeout: this.timeout,
       stuns: this.stuns,
       lobby: `${pkg.name}@${pkg.version}`,
       server: {
         address: new URL(this.signaling),
-        version: '0.2.0',
+        version: '0.3.0',
       },
     })
 
@@ -68,7 +67,7 @@ export default class extends LitElement {
           return html`
             Who do you want to play against?
             <duo-lobby
-              .connection=${this.p2p.connection}
+              .connection=${this.p2p.lobbyConnection}
               @proposal=${this.proposeGroup}
             ></duo-lobby>`
 
