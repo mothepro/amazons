@@ -2,7 +2,7 @@ import { Spot } from '@mothepro/amazons-engine'
 import storage from 'std:kv-storage'
 import { LitElement, html, customElement, property } from 'lit-element'
 import P2P, { State } from '@mothepro/fancy-p2p'
-import type { ProposalEvent } from './src/lobby.js'
+import type { ProposalEvent, NameChangeEvent } from './src/lobby.js'
 import pkg from './package.json'
 
 import './src/lobby.js'
@@ -10,10 +10,6 @@ import './src/amazons.js'
 
 @customElement('amazons-online')
 export default class extends LitElement {
-  /** Name of player in lobby. */
-  @property({ type: String, reflect: true })
-  name!: string
-
   /** List of STUN servers to broker P2P connections. */
   @property({ type: Array, reflect: true })
   stuns!: string[]
@@ -33,7 +29,14 @@ export default class extends LitElement {
   private p2p?: P2P<ArrayBuffer>
 
   protected async firstUpdated() {
-    this.p2p = new P2P('', {
+    let name = await storage.get('name')
+    if (!name || typeof name != 'string')
+      name = '' // let the server assign a name
+    this.connect(name)
+  }
+
+  private async connect(name: string) {
+    this.p2p = new P2P(name, {
       retries: this.retries,
       timeout: this.timeout,
       stuns: this.stuns,
@@ -53,6 +56,15 @@ export default class extends LitElement {
     this.requestUpdate()
   }
 
+  private nameChange({ detail }: NameChangeEvent) {
+    try {
+      this.p2p?.leaveLobby()
+      this.connect(detail)
+    } catch (err) {
+      console.error('Unable to reconnect', err)
+    }
+  }
+
   private proposeGroup({ detail }: ProposalEvent) {
     try {
       this.p2p!.proposeGroup(detail)
@@ -70,6 +82,7 @@ export default class extends LitElement {
             <duo-lobby
               .connection=${this.p2p.lobbyConnection}
               @proposal=${this.proposeGroup}
+              @name-change=${this.nameChange}
             ></duo-lobby>`
 
         case State.LOADING:
