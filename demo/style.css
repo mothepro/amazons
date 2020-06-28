@@ -5,7 +5,7 @@ h1 {
   font-size: .3em;
 }
 
-.lds-ripple {
+.loading {
   text-align: center;
   position: fixed;
   top: 50%;
@@ -17,17 +17,17 @@ h1 {
   padding-top: 100px;
   text-transform: uppercase;
 }
-.lds-ripple div {
+.loading div {
   position: absolute;
   background-color: royalblue;
   opacity: 1;
   border-radius: 50%;
-  animation: lds-ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  animation: loading 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
-.lds-ripple div:nth-child(2) {
+.loading div:nth-child(2) {
   animation-delay: -1s;
 }
-@keyframes lds-ripple {
+@keyframes loading {
   0% {
     top: 40px;
     left: 40px;

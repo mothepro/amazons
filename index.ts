@@ -90,7 +90,7 @@ export default class extends LitElement {
             ></duo-lobby>`
 
         case State.LOADING:
-          return html`<slot name="loading">Loading...</slot>`
+          return html`<slot>Loading...</slot>`
 
         case State.READY:
           return html`
@@ -103,6 +103,6 @@ export default class extends LitElement {
             ></amazons-with-peers>`
       }
 
-    return html`<slot name="offline">Offline</slot>`
+    return html`<slot>Offline</slot>`
   }
 }
