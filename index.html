@@ -26,7 +26,7 @@
   </h1>
   <amazons-online
     signaling="wss://ws.parkshade.com:443"
-    version="0.3.1"
+    version="0.3.2"
     stuns='[
       "stun:stun.stunprotocol.org",
       "stun:stun.l.google.com:19302",
@@ -37,15 +37,9 @@
     ]'
     retries=3
     timeout=5000>
-    <div slot="offline" class="lds-ripple">
+    <div class="loading">
       <div></div>
       <div></div>
-      Searching
-    </div>
-    <div slot="loading" class="lds-ripple">
-      <div></div>
-      <div></div>
-      Connecting
     </div>
   </amazons-online>
 </body>
