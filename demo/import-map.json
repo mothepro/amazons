@@ -22,7 +22,7 @@
     "lit-html": "https://unpkg.com/lit-html@1.2.1/lit-html.js",
     "std:kv-storage": [
       "std:kv-storage",
-      "https://unpkg.com/kv-storage-polyfill@2.0.0/dist/kv-storage-polyfill.js"
+      "https://unpkg.com/kv-storage-polyfill@2.0.0/dist/kv-storage-polyfill.mjs"
     ]
   }
 }
