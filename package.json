@@ -46,6 +46,7 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "@material/mwc-list": "^0.15.0",
     "@mothepro/amazons-engine": "^0.0.10",
     "@mothepro/fancy-p2p": "^0.0.14",
     "@mothepro/lit-amazons": "^0.0.2",

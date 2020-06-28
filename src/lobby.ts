@@ -3,6 +3,9 @@ import type { SafeListener } from 'fancy-emitter'
 import type { Client } from '@mothepro/fancy-p2p'
 import storage from 'std:kv-storage'
 
+import '@material/mwc-list'
+import '@material/mwc-list/mwc-list-item.js'
+
 export type ProposalEvent = CustomEvent<Client>
 export type NameChangeEvent = CustomEvent<string>
 
@@ -69,21 +72,28 @@ export default class extends LitElement {
   }
 
   protected readonly render = () => html`
-    <ul part="client-list">
+    <mwc-list part="client-list">
       ${this.clients.map(({ client, action }) => client.isYou
         ? html`
-        <li
-         part="client is-you"
-         @dblclick=${() => this.editing = true}>
-         ${this.editing
-          ? html`
-          <form @submit=${this.saveName(client.name)}>
-            <input part="edit-name" type="text" name="newName" placeholder="Your name" value=${client.name} />
-          </form>`
-          : client.name }
-        </li>`
+        <mwc-list-item
+          part="client is-you"
+          activated
+          @dblclick=${() => this.editing = true}>
+          ${this.editing
+            ? html`
+            <form @submit=${this.saveName(client.name)}>
+              <input
+                part="edit-name"
+                type="text"
+                autofocus 
+                name="newName"
+                placeholder="Your name"
+                value=${client.name} />
+            </form>`
+            : client.name }
+        </mwc-list-item>`
         : html`
-        <li part="client is-other">
+        <mwc-list-item part="client is-other">
           ${client.name}
           ${action
           ? html`
@@ -105,6 +115,6 @@ export default class extends LitElement {
               @click=${() => this.dispatchEvent(new CustomEvent('proposal', { detail: client }))}>
                 ${this.inviteText}
             </button>`}
-        </li>`)}
-    </ul>`
+        </mwc-list-item>`)}
+    </mwc-list>`
 }

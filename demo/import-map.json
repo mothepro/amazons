@@ -1,5 +1,19 @@
 {
   "imports": {
+    "@material/base/": "https://unpkg.com/@material/base@7.0.0/",
+    "@material/base": "https://unpkg.com/@material/base@7.0.0/dist/mdc.base.js",
+    "@material/dom/": "https://unpkg.com/@material/dom@7.0.0/",
+    "@material/dom": "https://unpkg.com/@material/dom@7.0.0/dist/mdc.dom.js",
+    "@material/list/": "https://unpkg.com/@material/list@7.0.0/",
+    "@material/list": "https://unpkg.com/@material/list@7.0.0/dist/mdc.list.js",
+    "@material/ripple/": "https://unpkg.com/@material/ripple@7.0.0/",
+    "@material/ripple": "https://unpkg.com/@material/ripple@7.0.0/dist/mdc.ripple.js",
+    "@material/mwc-base/": "https://unpkg.com/@material/mwc-base@0.15.0/",
+    "@material/mwc-base": "https://unpkg.com/@material/mwc-base@0.15.0/mwc-base.js",
+    "@material/mwc-list/": "https://unpkg.com/@material/mwc-list@0.15.0/",
+    "@material/mwc-list": "https://unpkg.com/@material/mwc-list@0.15.0/mwc-list.js",
+    "@material/mwc-ripple/": "https://unpkg.com/@material/mwc-ripple@0.15.0/",
+    "@material/mwc-ripple": "https://unpkg.com/@material/mwc-ripple@0.15.0/mwc-ripple.js",
     "@mothepro/amazons-engine/": "https://unpkg.com/@mothepro/amazons-engine@0.0.10/",
     "@mothepro/amazons-engine": "https://unpkg.com/@mothepro/amazons-engine@0.0.10/dist/esm/index.js",
     "@mothepro/loose-set/": "https://unpkg.com/@mothepro/loose-set@1.0.0/",
@@ -23,6 +37,7 @@
     "std:kv-storage": [
       "std:kv-storage",
       "https://unpkg.com/kv-storage-polyfill@2.0.0/dist/kv-storage-polyfill.mjs"
-    ]
+    ],
+    "tslib": "https://unpkg.com/tslib@2.0.0/tslib.es6.js"
   }
 }

@@ -1,6 +1,6 @@
 import { Spot } from '@mothepro/amazons-engine'
 import storage from 'std:kv-storage'
-import { LitElement, html, customElement, property } from 'lit-element'
+import { LitElement, html, customElement, property, css } from 'lit-element'
 import P2P, { State } from '@mothepro/fancy-p2p'
 import type { ProposalEvent, NameChangeEvent } from './src/lobby.js'
 import pkg from './package.json'
@@ -31,6 +31,14 @@ export default class extends LitElement {
   timeout!: number
 
   private p2p?: P2P<ArrayBuffer>
+
+  static readonly styles = css`
+    duo-lobby {
+      display: block;
+      margin: 0 auto;
+      max-width: 400px;
+      border: 1px solid #d3d3d3;
+    }`
 
   protected async firstUpdated() {
     let name = await storage.get('name')
