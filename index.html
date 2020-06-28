@@ -9,22 +9,35 @@
   <script type="importmap-shim" src="import-map.json"></script>
   <!-- Production -->
   <script prod-only type=module src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
-  <script prod-only type=module-shim src="//unpkg.com/amazons/dist/esm/demo/index.js"></script>
-  <script prod-only type=application/javascript
+  <script prod-only type=module-shim src="//unpkg.com/amazons/dist/esm/index.js"></script>
+  <script prod-only type=application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-48191613-7"></script>
   <!-- Development -->
   <script dev-only type=dev-only-application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
   <script dev-only type=dev-only-module src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
-  <script dev-only type=dev-only-module-shim src="./index.ts"></script>
+  <script dev-only type=dev-only-module-shim src="../index.ts"></script>
 </head>
 
 <body>
-  <form>
-    <input required type="text" name="name" placeholder="Name" maxlength="20" />
-    <input type="submit" value="Find others to play against">
-  </form>
-  <br />
-  <a href="https://mothepro.github.io/lit-amazons/">single player coming soon...</a>
+  <amazons-online
+    signaling="wss://ws.parkshade.com:443"
+    stuns="
+      stun:stun.stunprotocol.org,
+      stun:stun.l.google.com:19302,
+      stun:stun1.l.google.com:19302,
+      stun:stun2.l.google.com:19302,
+      stun:stun3.l.google.com:19302,
+      stun:stun4.l.google.com:19302"
+    retries=3
+    timeout=5000
+  ></amazons-online>
 </body>
+
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'UA-48191613-7')
+</script>
 
 </html>
