@@ -118,7 +118,7 @@ export default class extends LitElement {
     setTimeout(() => this.confetti = 0, 10 * 1000)
   }
 
-  private async bindMessages({ message, name }: Peer<ArrayBuffer>, color: Color) {
+  private async bindMessages({ message, name, close }: Peer<ArrayBuffer>, color: Color) {
     try {
       for await (const data of message) {
         if (this.amazons.current != color)
@@ -142,8 +142,7 @@ export default class extends LitElement {
     } catch (err) {
       console.error('Connection broken with', name, err)
     }
-    // game is no longer updated...
-    // peer.close()
+    close()
   }
 
   protected readonly render = () => html`
