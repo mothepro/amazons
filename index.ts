@@ -18,6 +18,10 @@ export default class extends LitElement {
   @property({ type: String, reflect: true })
   signaling!: string
 
+  /** Version of the signaling server. */
+  @property({ type: String, reflect: true })
+  version!: string
+
   /** Number of times to attempt to make an RTC connection. Defaults to 1 */
   @property({ type: Number, reflect: true })
   retries!: number
@@ -42,8 +46,8 @@ export default class extends LitElement {
       stuns: this.stuns,
       lobby: `${pkg.name}@${pkg.version}`,
       server: {
-        address: new URL(this.signaling),
-        version: '0.3.0',
+        address: this.signaling,
+        version: this.version,
       },
     })
 

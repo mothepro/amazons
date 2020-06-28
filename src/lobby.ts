@@ -53,17 +53,19 @@ export default class extends LitElement {
     this.clients = this.clients.filter(({ client: currentClient }) => currentClient != client)
   }
 
-  private async saveName(e: Event) {
-    const data = new FormData(e.target as HTMLFormElement),
-      newName = data.get('newName')
+  private saveName(oldName: string) {
+    return (e: Event) => {
+      const data = new FormData(e.target as HTMLFormElement),
+        newName = data.get('newName')
     
-    if (newName && newName != data.get('oldName')) {
-      storage.set('name', newName)
-      this.dispatchEvent(new CustomEvent('name-change', { detail: newName }))
-    }
+      if (newName && newName != oldName) {
+        storage.set('name', newName)
+        this.dispatchEvent(new CustomEvent('name-change', { detail: newName }))
+      }
 
-    e.preventDefault()
-    this.editing = false
+      e.preventDefault()
+      this.editing = false
+    }
   }
 
   protected readonly render = () => html`
@@ -75,10 +77,8 @@ export default class extends LitElement {
          @dblclick=${() => this.editing = true}>
          ${this.editing
           ? html`
-          <form @submit=${this.saveName}>
-            <input type="hidden" name="oldName" value=${client.name} />
-            <input type="text" name="newName" placeholder="Your name" value=${client.name} />
-            <input type="submit" value="Save Name" />
+          <form @submit=${this.saveName(client.name)}>
+            <input part="edit-name" type="text" name="newName" placeholder="Your name" value=${client.name} />
           </form>`
           : client.name }
         </li>`
