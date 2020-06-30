@@ -1,12 +1,13 @@
 import { Spot } from '@mothepro/amazons-engine'
 import storage from 'std:kv-storage'
-import { LitElement, html, customElement, property, css } from 'lit-element'
+import { LitElement, html, customElement, property, css, internalProperty } from 'lit-element'
 import P2P, { State } from '@mothepro/fancy-p2p'
 import type { ProposalEvent, NameChangeEvent } from './src/lobby.js'
 import pkg from './package.json'
 
 import './src/lobby.js'
-import './src/amazons.js'
+import './src/amazonsWithPeers.js'
+import 'lit-confetti'
 
 /** Keys for storing data in kv-storage */
 const enum Keys {
@@ -35,6 +36,9 @@ export default class extends LitElement {
   /** The number of milliseconds to wait before giving up on the connection. Doesn't give up by default */
   @property({ type: Number, reflect: true })
   timeout!: number
+
+  @internalProperty()
+  protected confetti = 0
 
   private p2p?: P2P<ArrayBuffer>
 
@@ -90,6 +94,11 @@ export default class extends LitElement {
     }
   }
 
+  private gameOver() {
+    this.confetti = 150
+    setTimeout(() => this.confetti = 0, 10 * 1000)
+  }
+
   protected readonly render = () => {
     if (this.p2p?.stateChange.isAlive)
       switch (this.p2p!.state) {
@@ -112,7 +121,13 @@ export default class extends LitElement {
                 [Spot.BLACK]: this.p2p.peers[0],
                 [Spot.WHITE]: this.p2p.peers[1],
               }}
-            ></amazons-with-peers>`
+              @game-over=${this.gameOver}
+            ></amazons-with-peers>
+            <lit-confetti
+              part="confetti"
+              gravity=1
+              count=${this.confetti}
+            ></lit-confetti>`
       }
 
     return html`<slot>Offline</slot>`

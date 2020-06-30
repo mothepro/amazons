@@ -1,10 +1,17 @@
-import { customElement, LitElement, html, css, internalProperty, property } from 'lit-element'
+import { customElement, LitElement, html, css, property } from 'lit-element'
 import type { PieceMovedEvent, SpotDestroyedEvent } from '@mothepro/lit-amazons'
 import type { Peer } from '@mothepro/fancy-p2p'
-import Amazons, { Color, Position } from '@mothepro/amazons-engine'
+import Amazons, { Color, Position, Spot } from '@mothepro/amazons-engine'
 
 import '@mothepro/lit-amazons'
-import 'lit-confetti'
+
+export type GameOverEvent = CustomEvent<Spot>
+
+declare global {
+  interface HTMLElementEventMap {
+    'game-over': GameOverEvent
+  }
+}
 
 // Note: board must be an 8x8 or smaller
 const posToBuf = (...pos: Position[]) => new Uint8Array(
@@ -25,9 +32,6 @@ export default class extends LitElement {
 
   @property({ attribute: false })
   broadcast!: (data: ArrayBuffer, includeSelf?: boolean) => void
-
-  @internalProperty()
-  protected confetti = 0
 
   static readonly styles = css`
   :host {
@@ -113,9 +117,7 @@ export default class extends LitElement {
     this.amazons.start()
     for await (const _ of this.amazons.stateChange)
       this.requestUpdate()
-
-    this.confetti = 150
-    setTimeout(() => this.confetti = 0, 10 * 1000)
+    this.dispatchEvent(new CustomEvent('game-over', { detail: this.amazons.waiting }))
   }
 
   private async bindMessages({ message, name, close }: Peer<ArrayBuffer>, color: Color) {
@@ -140,15 +142,18 @@ export default class extends LitElement {
         }
       }
     } catch (err) {
-      console.error('Connection broken with', name, err)
+      console.error('Lost Connection with', name, err)
     }
-    close()
   }
 
   protected readonly render = () => html`
     <h1 part="title is-${this.amazons.stateChange.isAlive ? 'ongoing' : 'over'}">${this.amazons.stateChange.isAlive
-      ? `${this.peers[this.amazons.current].isYou ? 'Your' : `${this.peers[this.amazons.current].name}'s`} turn`
-      : `${this.peers[this.amazons.waiting].isYou ? 'You Win' : `${this.peers[this.amazons.waiting].name} Wins`}!`
+      ? this.peers[this.amazons.current].isYou
+        ? 'Your turn'
+        : `${this.peers[this.amazons.current].name}'s turn`
+      : this.peers[this.amazons.waiting].isYou
+        ? 'You Win!'
+        : `${this.peers[this.amazons.waiting].name} Wins!`
     }</h1>
     <lit-amazons
       part="game"
@@ -162,6 +167,5 @@ export default class extends LitElement {
       @spot-destroyed=${({ detail: spot }: SpotDestroyedEvent) => this.broadcast(posToBuf(spot))}
       @piece-picked=${() => this.setAttribute('dragging', '')}
       @piece-let-go=${() => this.removeAttribute('dragging')}
-    ></lit-amazons>
-    <lit-confetti part="confetti" gravity=1 count=${this.confetti}></lit-confetti>`
+    ></lit-amazons>`
 }
