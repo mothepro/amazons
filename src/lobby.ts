@@ -1,7 +1,6 @@
 import { LitElement, html, customElement, property, internalProperty } from 'lit-element'
 import type { SafeListener } from 'fancy-emitter'
 import type { Client } from '@mothepro/fancy-p2p'
-import storage from 'std:kv-storage'
 
 import '@material/mwc-list'
 import '@material/mwc-list/mwc-list-item.js'
@@ -58,16 +57,12 @@ export default class extends LitElement {
 
   private saveName(oldName: string) {
     return (e: Event) => {
-      const data = new FormData(e.target as HTMLFormElement),
-        newName = data.get('newName')
-    
-      if (newName && newName != oldName) {
-        storage.set('name', newName)
-        this.dispatchEvent(new CustomEvent('name-change', { detail: newName }))
-      }
-
       e.preventDefault()
       this.editing = false
+
+      const newName = new FormData(e.target as HTMLFormElement).get('newName')
+      if (newName && newName != oldName)
+        this.dispatchEvent(new CustomEvent('name-change', { detail: newName }))
     }
   }
 

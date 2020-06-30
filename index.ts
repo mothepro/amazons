@@ -8,6 +8,12 @@ import pkg from './package.json'
 import './src/lobby.js'
 import './src/amazons.js'
 
+/** Keys for storing data in kv-storage */
+const enum Keys {
+  /** The name of the user to connect in the lobby as. */
+  NAME = 'name'
+}
+
 @customElement('amazons-online')
 export default class extends LitElement {
   /** List of STUN servers to broker P2P connections. */
@@ -38,13 +44,11 @@ export default class extends LitElement {
       margin: 0 auto;
       max-width: 400px;
       border: 1px solid #d3d3d3;
+      border-radius: 0.5em;
     }`
 
   protected async firstUpdated() {
-    let name = await storage.get('name')
-    if (!name || typeof name != 'string')
-      name = '' // let the server assign a name
-    this.connect(name)
+    this.connect((await storage.get(Keys.NAME) || '').toString())
   }
 
   private async connect(name: string) {
@@ -70,6 +74,7 @@ export default class extends LitElement {
 
   private nameChange({ detail }: NameChangeEvent) {
     try {
+      storage.set(Keys.NAME, detail)
       this.p2p?.leaveLobby()
       this.connect(detail)
     } catch (err) {
@@ -90,7 +95,6 @@ export default class extends LitElement {
       switch (this.p2p!.state) {
         case State.LOBBY:
           return html`
-            Who do you want to play against?
             <duo-lobby
               .connection=${this.p2p.lobbyConnection}
               @proposal=${this.proposeGroup}
