@@ -4,6 +4,7 @@ import type { Client } from '@mothepro/fancy-p2p'
 
 import '@material/mwc-list'
 import '@material/mwc-list/mwc-list-item.js'
+import '@material/mwc-icon-button'
 
 export type ProposalEvent = CustomEvent<Client>
 export type NameChangeEvent = CustomEvent<string>
@@ -73,7 +74,9 @@ export default class extends LitElement {
         <mwc-list-item
           part="client is-you"
           activated
-          @dblclick=${() => this.editing = true}>
+          graphic="large"
+          @click=${() => this.editing = true}>
+          <mwc-icon-button icon="✏️" slot="graphic" aria-label="Change name"></mwc-icon-button>
           ${this.editing
             ? html`
             <form @submit=${this.saveName(client.name)}>
@@ -88,28 +91,25 @@ export default class extends LitElement {
             : client.name }
         </mwc-list-item>`
         : html`
-        <mwc-list-item part="client is-other">
+        <mwc-list-item
+          part="client is-other"
+          graphic="large"
+          @click=${() => !action && this.dispatchEvent(new CustomEvent('proposal', { detail: client }))}
+        >
           ${client.name}
           ${action
           ? html`
-            <button
-              part="accept"
-              @click=${() => {
-                action(true)
-                this.clients = this.clients.map(item => item.client == client ? { client, action: undefined } : item)
-              }}>${this.acceptText}</button>
-            <button
-              part="reject"
-              @click=${() => {
-                this.clients = this.clients.map(item => item.client == client ? { client, action: undefined } : item)
-                action(false)
-              }}>${this.rejectText}</button>`
-          : html`
-            <button
-              part="invite"
-              @click=${() => this.dispatchEvent(new CustomEvent('proposal', { detail: client }))}>
-                ${this.inviteText}
-            </button>`}
+          <span slot="graphic" class="material-icons">
+            <span part="accept" @click=${() => {
+              action(true)
+              this.clients = this.clients.map(item => item.client == client ? { client, action: undefined } : item)
+            }}>✅</span>
+            <span part="reject" @click=${() => {
+              action(false)
+              this.clients = this.clients.map(item => item.client == client ? { client, action: undefined } : item)
+            }}>❌</span>
+          </span>`
+          : html`<span slot="graphic" class="material-icons" part="invite">➕</span>`}
         </mwc-list-item>`)}
     </mwc-list>`
 }
