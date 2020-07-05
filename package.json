@@ -46,13 +46,12 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "@material/mwc-list": "^0.15.0",
     "@mothepro/amazons-engine": "^0.0.10",
     "@mothepro/fancy-p2p": "^0.0.14",
     "@mothepro/lit-amazons": "^0.0.2",
     "fancy-emitter": "^2.0.0",
-    "kv-storage-polyfill": "^2.0.0",
     "lit-confetti": "^0.1.5",
-    "lit-element": "^2.3.1"
+    "lit-element": "^2.3.1",
+    "lit-p2p": "^0.0.1"
   }
 }
