@@ -25,7 +25,7 @@ const bufToPos = (data: ArrayBuffer) => [...new Uint8Array(data)].map(byte => ([
 @customElement('amazons-with-peers')
 export default class extends LitElement {
 
-  protected amazons = new Amazons
+  protected engine = new Amazons
 
   @property({ attribute: false })
   peers!: Record<Color, Peer<ArrayBuffer>>
@@ -114,27 +114,27 @@ export default class extends LitElement {
     for (const [color, peer] of Object.entries(this.peers))
       this.bindMessages(peer, parseInt(color))
 
-    this.amazons.start()
-    for await (const _ of this.amazons.stateChange)
+    this.engine.start()
+    for await (const _ of this.engine.stateChange)
       this.requestUpdate()
-    this.dispatchEvent(new CustomEvent('game-over', { detail: this.amazons.waiting }))
+    this.dispatchEvent(new CustomEvent('game-over', { detail: this.engine.waiting }))
   }
 
   private async bindMessages({ message, name, close }: Peer<ArrayBuffer>, color: Color) {
     try {
       for await (const data of message) {
-        if (this.amazons.current != color)
+        if (this.engine.current != color)
           throw Error(`${name} sent ${data} (${data.byteLength} bytes) when it isn't their turn`)
 
         switch (data.byteLength) {
           case 1: // Destroy
             const [spot] = bufToPos(data)
-            this.amazons.destroy(spot)
+            this.engine.destroy(spot)
             break
 
           case 2: // Move
             const [from, to] = bufToPos(data)
-            this.amazons.move(from, to)
+            this.engine.move(from, to)
             break
 
           default:
@@ -147,22 +147,22 @@ export default class extends LitElement {
   }
 
   protected readonly render = () => html`
-    <h1 part="title is-${this.amazons.stateChange.isAlive ? 'ongoing' : 'over'}">${this.amazons.stateChange.isAlive
-      ? this.peers[this.amazons.current].isYou
+    <h1 part="title is-${this.engine.stateChange.isAlive ? 'ongoing' : 'over'}">${this.engine.stateChange.isAlive
+      ? this.peers[this.engine.current].isYou
         ? 'Your turn'
-        : `${this.peers[this.amazons.current].name}'s turn`
-      : this.peers[this.amazons.waiting].isYou
+        : `${this.peers[this.engine.current].name}'s turn`
+      : this.peers[this.engine.waiting].isYou
         ? 'You Win!'
-        : `${this.peers[this.amazons.waiting].name} Wins!`
+        : `${this.peers[this.engine.waiting].name} Wins!`
     }</h1>
     <lit-amazons
       part="game"
-      ?ignore=${!this.peers[this.amazons.current].isYou}
-      state=${this.amazons.state}
-      current=${this.amazons.current}
-      .destructible=${this.amazons.destructible}
-      .pieces=${this.amazons.pieces}
-      .board=${this.amazons.board}
+      ?ignore=${!this.peers[this.engine.current].isYou}
+      state=${this.engine.state}
+      current=${this.engine.current}
+      .destructible=${this.engine.destructible}
+      .pieces=${this.engine.pieces}
+      .board=${this.engine.board}
       @piece-moved=${({ detail: { from, to } }: PieceMovedEvent) => this.broadcast(posToBuf(from, to))}
       @spot-destroyed=${({ detail: spot }: SpotDestroyedEvent) => this.broadcast(posToBuf(spot))}
       @piece-picked=${() => this.setAttribute('dragging', '')}

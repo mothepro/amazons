@@ -474,16 +474,6 @@
   dependencies:
     fancy-emitter "^1.5.1"
 
-"@mothepro/fancy-p2p@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@mothepro/fancy-p2p/-/fancy-p2p-0.0.14.tgz#316e1a1092a0afbac364e79ea3e74174b12e6161"
-  integrity sha512-byuiJW8GQBIefonHi4qAJapy6e/RfW9iL7wphXzQDNeeVA4+2JBJVg3UQCLFPMKLALDT5yIOYkHsRiyMdh3r+w==
-  dependencies:
-    "@mothepro/ez-rtc" "^0.1.0"
-    "@mothepro/signaling-lobby" "^0.3.1"
-    "@types/ws" "^7.2.5"
-    fancy-emitter "^1.5.1"
-
 "@mothepro/fancy-p2p@^0.0.15":
   version "0.0.15"
   resolved "https://registry.yarnpkg.com/@mothepro/fancy-p2p/-/fancy-p2p-0.0.15.tgz#b930867692d3a0766e8a8d7f849c690d762617f9"

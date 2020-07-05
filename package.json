@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@mothepro/amazons-engine": "^0.0.10",
-    "@mothepro/fancy-p2p": "^0.0.14",
+    "@mothepro/fancy-p2p": "^0.0.15",
     "@mothepro/lit-amazons": "^0.0.2",
     "fancy-emitter": "^2.0.0",
     "lit-confetti": "^0.1.5",
