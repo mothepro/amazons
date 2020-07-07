@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Amazons Demo</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="style.css">
   <script type="importmap-shim" src="import-map.json"></script>
-  <script type="module-shim" src="//unpkg.com/lit-p2p@0.0.1/dist/esm/index.js"></script>
   <!-- Production -->
   <script prod-only type=prod-only-module src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
   <script prod-only type=prod-only-module-shim src="//unpkg.com/amazons/dist/esm/index.js"></script>
@@ -25,7 +25,10 @@
     Amazons
     <span class="subtitle">by Mo</span>
   </h1>
-  <amazons-online
+  <p2p-switch
+    local-storage
+    max-peers=1
+
     signaling="wss://ws.parkshade.com:443"
     version="0.3.2"
     stuns='[
@@ -38,11 +41,19 @@
     ]'
     retries=3
     timeout=5000>
-    <div class="loading">
+    <div slot="offline" class="loading">
       <div></div>
       <div></div>
     </div>
-  </amazons-online>
+    <div slot="loading" class="loading">
+      hang on
+      <div></div>
+      <div></div>
+    </div>
+    <div slot="disconnected">No longer connected</div>
+    <amazons-with-peers></amazons-with-peers>
+    <lit-confetti id="confetti" gravity=1></lit-confetti>
+  </p2p-switch>
 </body>
 
 <script>
@@ -50,6 +61,13 @@
   function gtag() { dataLayer.push(arguments) }
   gtag('js', new Date())
   gtag('config', 'UA-48191613-7')
+</script>
+
+<script>
+  document.getElementsByTagName('amazons-with-peers')[0].addEventListener('game-over', () => {
+    document.getElementsByTagName('lit-confetti')[0].confetti = 150
+    setTimeout(() => document.getElementsByTagName('lit-confetti')[0].confetti = 0, 10 * 1000)
+  })
 </script>
 
 </html>
